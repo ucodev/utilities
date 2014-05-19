@@ -1,0 +1,30 @@
++ Author:
+  - See AUTHOR file
+
++ Lincense:
+  - See LICENSE file
+
++ Installation:
+
+  - See INSTALL file
+
++ Usage:
+
+  - Install uperft
+  - See the examples/ directory for more details regarding module development
+  - Use the tu/ directory as your first uperft test:
+
+    # uperft tu/ -20 1000000000 /tmp/results.csv
+
+  - The above command will execute all the unit test modules in the tu/ directory with a nice level of -20 and will store
+    the results into the /tmp/results.csv file. The 1000000000 value defines how many times the perft_run() function
+    will be called (i.e, the number of iterations for this benchmark). The following is a typical output of
+    /tmp/results.csv:
+
+
+	Unit Name;Iterations;Avg. Time (usec);Total Time (msec);Errors
+	SAL Unit;1000000000;0.004340;4340.000000;0
+	MUL Unit;1000000000;0.004420;4420.000000;0
+	ADD Unit;1000000000;0.005780;5780.000000;0
+
+

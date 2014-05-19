@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if ! [ -e ".done" ]; then
+	echo "Run 'do' first"
+	exit 1
+fi
+
+if [ `id -u` -ne 0 ]; then
+	echo "Current user is not root"
+	exit 1
+fi
+
+cp src/uperft /usr/local/bin/
+
+if [ $? -ne 0 ]; then
+	echo "Failed to copy perft binary into /usr/local/bin"
+	exit 1
+fi
+
+echo "Installation complete."
+
+exit 0
+
