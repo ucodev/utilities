@@ -38,7 +38,7 @@
  * Project details:
  *
  *  Home Page:   http://www.ucodev.org
- *  Version:     0.01a
+ *  Version:     0.01b
  *  Portability: C99, C11
  *  Description: Creates a C configuration header for the running architecture.
  *
@@ -54,12 +54,14 @@
 
 #include <stdio.h>
 
-int determine_sizes(void) {
-	unsigned char s8 = 0, s16 = 0, s32 = 0, s64 = 0, s128 = 0;
-
+int determine_arch(void) {
 	printf("#define ARCH_BITS %zu\n", sizeof(void *) << 3);
 	printf("#define LITTLE_ENDIAN %u\n", (*(unsigned char *) (unsigned int [1]) { 1 }) == 1);
 	printf("#define BIG_ENDIAN %u\n", (*(unsigned char *) (unsigned int [1]) { 1 }) == 0);
+}
+
+int determine_sizes(void) {
+	unsigned char s8 = 0, s16 = 0, s32 = 0, s64 = 0, s128 = 0;
 
 	if (sizeof(char) == 1) {
 		puts("typedef char pc_sint8_t;");
@@ -138,6 +140,7 @@ int main(void) {
 	puts("#ifndef CONFIG_H");
 	puts("#define CONFIG_H");
 
+	determine_arch();
 	determine_sizes();
 
 	puts("#endif");
