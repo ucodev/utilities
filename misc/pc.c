@@ -38,7 +38,7 @@
  * Project details:
  *
  *  Home Page:   http://www.ucodev.org
- *  Version:     0.01b
+ *  Version:     0.01c
  *  Portability: C99, C11
  *  Description: Creates a C configuration header for the running architecture.
  *
@@ -101,7 +101,7 @@ int determine_sizes(void) {
 		s128 = 1;
 	}
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && (~0ULL == 18446744073709551615ULL)
 	else {
 		puts("typedef signed pc_sint128_t __attribute__((mode(TI)));");
 		puts("typedef unsigned pc_uint128_t __attribute__((mode(TI)));");
