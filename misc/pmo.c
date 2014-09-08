@@ -38,7 +38,7 @@
  * Project details:
  *
  *  Home Page:   http://www.ucodev.org
- *  Version:     0.01a
+ *  Version:     0.01b
  *  Portability: C99, C11
  *  Description: An interface for portable memory operations
  *
@@ -54,18 +54,18 @@
 #define _is_little()	(*(unsigned char *) (uint32_t [1]) { 1 })
 
 /* Vector to uint */
-static inline void _memcpy_v2uint_fwd(const unsigned char *v, void *uintf, size_t bits) {
-	memcpy(uintf, v, bits >> 3);
+static inline void _memcpy_v2uint_fwd(const unsigned char *v, void *uintf, size_t len) {
+	memcpy(uintf, v, len);
 }
 
-static inline void _memcpy_v2uint_rev(const unsigned char *v, void *uintr, size_t bits) {
+static inline void _memcpy_v2uint_rev(const unsigned char *v, void *uintr, size_t len) {
 	unsigned int i = 0;
-	unsigned char uintr_tmp[bits >> 3];
+	unsigned char uintr_tmp[len];
 
-	for (i = 0; i < (bits >> 3); i ++)
-		uintr_tmp[i ^ ((bits >> 3) - 1)] = v[i];
+	for (i = 0; i < len; i ++)
+		uintr_tmp[i ^ (len - 1)] = v[i];
 
-	memcpy(uintr, uintr_tmp, bits >> 3);
+	memcpy(uintr, uintr_tmp, len);
 }
 
 void memcpy_vect2word_little(const unsigned char *v, uint16_t *word) {
@@ -117,18 +117,18 @@ void memcpy_vect2qword_big(const unsigned char *v, uint64_t *qword) {
 }
 
 /* uint to vector */
-static inline void _memcpy_uint2vect_fwd(const void *uintf, unsigned char *v, size_t bits) {
-	memcpy(v, uintf, bits >> 3);
+static inline void _memcpy_uint2vect_fwd(const void *uintf, unsigned char *v, size_t len) {
+	memcpy(v, uintf, len);
 }
 
-static inline void _memcpy_uint2vect_rev(const void *uintr, unsigned char *v, size_t bits) {
+static inline void _memcpy_uint2vect_rev(const void *uintr, unsigned char *v, size_t len) {
 	unsigned int i = 0;
-	unsigned char uintr_tmp[bits >> 3];
+	unsigned char uintr_tmp[len];
 
-	memcpy(uintr_tmp, uintr, bits >> 3);
+	memcpy(uintr_tmp, uintr, len);
 
-	for (i = 0; i < (bits >> 3); i ++)
-		v[i ^ ((bits >> 3) - 1)] = uintr_tmp[i];
+	for (i = 0; i < len; i ++)
+		v[i ^ (len - 1)] = uintr_tmp[i];
 }
 
 void memcpy_word2vect_little(const uint16_t *word, unsigned char *v) {
