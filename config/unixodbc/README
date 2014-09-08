@@ -1,0 +1,37 @@
+1. Installation
+
+  # apt-get install unixodbc
+  # cp config/odbcinst.ini /etc/odbcinst.ini
+ 
+
+
+2. Drivers
+
+  Oracle ODBC connector (Linux):
+   - http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html
+
+  Oracle ODBC connector (Windows):
+   - http://www.oracle.com/technetwork/database/windows/downloads/index-096177.html
+
+  MySQL ODBC connector (Debian):
+   - apt-get install mysql-connector-odbc
+
+  FreeTDS ODBC connector (Debian):
+   - apt-get install tdsodbc
+
+  PostgreSQL ODBC connector (Debian):
+   - apt-get install odbc-postgresql
+
+
+
+3. Extras
+
+  # apt-get install python-pyodbc
+
+
+
+4. Examples
+
+  Check example/ directory.
+
+
