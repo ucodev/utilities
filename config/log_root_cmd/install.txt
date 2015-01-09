@@ -1,0 +1,1 @@
+- Copy logcmd.sh into /etc/profile.d/

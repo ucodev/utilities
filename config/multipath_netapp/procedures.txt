@@ -1,0 +1,40 @@
+Procedures for NetApp Setup with dm-multipath for RHEL release 5.10 (Tikanga):
+
+- Pre-checks:
+# systool -c fc_host -v
+* Validate fiber channels
+
+- Install required packages:
+# yum install libhbaapi
+# yum install libhbalinux
+# rpm -ivh netapp_linux_host_utilities-6-2.x86_64.rpm
+# ln -s /usr/lib64/libHBAAPI.so.2 /usr/lib64/libHBAAPI.so
+* NetApp tools are now installed
+
+- Disable confliting components
+# vi /etc/sysconfig/selinux
+* Change SELinux to disabled (default is enforcing).
+* Copy /etc/multipath.conf from development to production
+
+- Reboot the server. Changes will take effect after it.
+# reboot
+
+- Validate results:
+# sanlun lun show
+* validate luns
+# multipath -ll
+* multipath data regarding mpath0 should be printed
+# multipath -v3
+* multipath extended data regarding mpath0 should be printed
+
+- Create Partitions:
+# fdisk /dev/mpath/mpath0
+* setup required partitions
+
+- Reboot the server for cleanup and flush partition tables:
+# reboot
+
+- Create required file systems through mkfs.* or similar tool.
+
+- Contents of /etc/multipath.conf: Check multipath.conf file.
+
