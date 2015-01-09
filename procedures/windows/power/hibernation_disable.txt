@@ -1,0 +1,6 @@
+To turn off hibernation:
+
+ - Run as Administrator:
+
+   * C:\> powercfg -h off
+

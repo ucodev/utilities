@@ -1,0 +1,70 @@
+1. Using PEM Certificates
+ 
+These are the files you need for PEM certificate.
+Four files are needed to this kind of certificate on server and client.
+ 
+Creation commands and descriptions for the files can be found below:
+ 
+ 
+File: ca.crt (Dummy)
+Description: The Root Certificate (Dummy)
+Location: CA Server or any other trusted server
+Command: # openssl req -nodes -new -x509 -days 1825 -keyout ca.key -out ca.crt
+ 
+ 
+File: server.key, server.csr
+Description: Generate the private key and certificate request for the server
+Location: Server
+Command: # openssl req -nodes -new -keyout server.key -out server.csr
+ 
+ 
+File: server.crt
+Description: The certificate for the server signed with the Root Certificate
+Location: Server
+Command: # openssl ca -cert ca.crt -keyfile ca.key -out server.crt -in server.csr
+ 
+ 
+File: client.key
+Description: Generate the private key and certificate request for the client
+Location: Client
+Command: # openssl req -nodes -new -keyout client.key -out client.csr
+ 
+ 
+File: client.crt
+Description: The certificate for the client signed with the Root Certificate
+Location: Client
+Command: # openssl ca -cert ca.crt -keyfile ca.key -out client.crt -in client.csr
+ 
+ 
+File: dh.pem
+Description: The Diffie-Hellman file for secure SSL/TLS nagotiation, same on the server and all clients
+Location: Client and Server
+Command: # openssl dhparam -out dh.pem 1024
+               (Change 1024 to the size of the key you want)
+ 
+ 
+File: shared.key
+Description: The shared key file, same on the server and the clients
+Location: Client and Server
+Command: # openvpn --genkey --secret shared.key
+ 
+ 
+ 
+2. Using PKCS12 Certificates
+ 
+ 
+Public Key Cryptography Standards 12
+ 
+A PKCS12 Certificate can be created using the files generated for the PEM certificates.
+ 
+ 
+Command:
+ 
+# openssl pkcs12 -export -in server.crt -inkey private/server.key -certificate ca.crt -name friendly_name -out server.p12
+ 
+Where friendly_name can be, for example, the CNAME.
+ 
+You'll be prompted for a password. Remember to keep it, so you can export information from the certificate.
+ 
+The above command create a PKCS12 certificate for the server. You can do the same for the client by replacing the server.crt and server.key with the client.crt and client.key files.
+

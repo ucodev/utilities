@@ -1,0 +1,8 @@
+user@local ~$ ssh-keygen -t dsa -f .ssh/id_dsa
+user@local ~$ scp .ssh/id_dsa.pub user@remote:~/.ssh/
+user@local ~$ ssh user@remote
+
+user@remote ~$ cat .ssh/id_dsa.pub >> .ssh/authorized_keys2
+user@remote ~$ chmod 640 .ssh/authorized_keys2
+user@remote ~$ rm .ssh/id_dsa.pub
+
