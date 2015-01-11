@@ -1,0 +1,19 @@
+QLogic Downloads page:
+
+  - http://driverdownloads.qlogic.com/QLogicDriverDownloads_UI/SearchByProduct.aspx?ProductCategory=39&Product=935&Os=65
+
+QLogic Superinstaller 20141010-1:
+
+ # wget http://filedownloads.qlogic.com/Files/TempDownlods/89747/QLogic-SuperInstaller-REL2014-20141010-1.tgz
+ # tar zxvf QLogic-SuperInstaller-REL2014-20141010-1.tgz
+ # cd QLogic-SuperInstaller-REL2014-20141010-1
+ # ./qlinstall
+
+Firmware:
+ - Firmware for RHEL 6.x
+ # cd /usr/src
+ # wget http://filedownloads.qlogic.com/Files/TempDownlods/88012/qlogic-firmware-7.02.00-1.noarch.rpm.gz
+ # gunzip qlogic-firmware-7.02.00-1.noarch.rpm.gz
+ # rpm -ivh qlogic-firmware-7.02.00-1.noarch.rpm
+ # /opt/QLogic_Corporation/QConvergeConsoleCLI/qaucli -fc -b all /lib/firmware/ql2400_fw.bin
+
