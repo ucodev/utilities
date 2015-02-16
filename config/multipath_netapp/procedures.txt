@@ -31,8 +31,15 @@ Procedures for NetApp Setup with dm-multipath for RHEL release 5.10 (Tikanga):
 # fdisk /dev/mpath/mpath0
 * setup required partitions
 
-- Reboot the server for cleanup and flush partition tables:
-# reboot
+- Choose:
+
+ - Re-read the partition table
+ # blockdev --rereadpt /dev/mpath/mpath0
+
+ or
+
+ - Reboot the server for cleanup and flush partition tables:
+ # reboot
 
 - Create required file systems through mkfs.* or similar tool.
 

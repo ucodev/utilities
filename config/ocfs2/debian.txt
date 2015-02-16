@@ -1,0 +1,43 @@
+== OCFS2 Configuration for Debian ==
+
+- On all nodes:
+
+  # apt-get install ocfs2-tools
+  # dpkg-reconfigure ocfs2-tools
+  # vi /etc/ocfs2/cluster.conf
+
+	cluster:
+		node_count = 2
+		heartbeat_mode = local
+		name = testcluster
+
+	node:
+		ip_port = 7777
+		ip_address = 10.51.33.20
+		number = 1
+		name = hostname-01
+		cluster = testcluster
+
+	node:
+		ip_port = 7777
+		ip_address = 10.51.34.20
+		number = 2
+		name = hostname-02
+		cluster = testcluster
+
+
+- On a single node:
+
+  # fdisk /dev/sdb
+  # mkfs.ocfs2 -b 4k -C 32K -L "testcluster" -N 2 /dev/sdb1
+
+
+- On all nodes:
+
+  # blockdev --rereadpt /dev/sdb
+  # service ocfs2 restart
+  # service o2cb restart
+  # mkdir /mnt/testcluster
+  # mount /dev/sdb1 /mnt/testcluster
+  # service o2cb status
+
