@@ -48,7 +48,7 @@
 # Usage example:
 #
 #    $ ./logsegv.py "Feb 28 19:46:12 localhost kernel: [196586.543197] test[3663]: segfault at 7fde9762e9d0 ip 00007fde9e24a70d sp 00007fde9d639eb0 error 4 in libpthread-2.19.so[7fde9e23d000+19000]"
-#    Logsegv v0.1
+#    Logsegv v0.01
 #    Copyright (c) 2015  Pedro A. Hortas (pah@ucodev.org)
 #    Licensed under the BSD 3-Clause license
 #    http://www.ucodev.org
@@ -88,6 +88,7 @@ import commands
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 DUMP_FILE = "/tmp/.dump.dat"
+VERSION = "0.01"
 
 ### Useful stuff ###
 class logsegv():
@@ -200,7 +201,7 @@ class logsegv():
 			pass
 
 	def product_version(self):
-		print("Logsegv v0.01")
+		print("Logsegv v" + VERSION)
 		print("Copyright (c) 2015  Pedro A. Hortas (pah@ucodev.org)")
 		print("Licensed under the BSD 3-Clause license")
 		print("http://www.ucodev.org\n")
