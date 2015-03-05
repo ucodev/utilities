@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.01
+#  Version:	0.01a
 #  Portability: GNU/Linux, Python >= 2.6, Python < 3.x
 #  Description: Analyzes a syslog segfault entry and tries to dump some human readable data
 #               regarding the cause of the crash.
@@ -88,7 +88,7 @@ import commands
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 DUMP_FILE = "/tmp/.dump.dat"
-VERSION = "0.01"
+VERSION = "0.01a"
 
 ### Useful stuff ###
 class logsegv():
@@ -196,7 +196,7 @@ class logsegv():
 
 	def dump_unlink(self):
 		try:
-			os.unlink(".dump.dat")
+			os.unlink(DUMP_FILE)
 		except:
 			pass
 
