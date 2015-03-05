@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.01b
+#  Version:	0.01c
 #  Portability: GNU/Linux, Python >= 2.6, Python < 3.x
 #  Description: Analyzes a syslog segfault entry and tries to dump some human readable data
 #               regarding the cause of the crash.
@@ -48,7 +48,7 @@
 # Usage example:
 #
 #    $ ./logsegv.py "Feb 28 19:46:12 localhost kernel: [196586.543197] test[3663]: segfault at 7fde9762e9d0 ip 00007fde9e24a70d sp 00007fde9d639eb0 error 4 in libpthread-2.19.so[7fde9e23d000+19000]"
-#    Logsegv v0.01b
+#    Logsegv v0.01c
 #    Copyright (c) 2015  Pedro A. Hortas (pah@ucodev.org)
 #    Licensed under the BSD 3-Clause license
 #    http://www.ucodev.org
@@ -75,7 +75,7 @@
 #    Occurred inside:   	pthread_cancel()
 #    Somewhere around:  	/build/buildd/eglibc-2.19/nptl/pthread_cancel.c:34
 #
-#    Nothing more to show
+#    Nothing more to show.
 #    $
 #
 
@@ -88,7 +88,7 @@ import commands
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 DUMP_FILE = "/tmp/.dump.dat"
-VERSION = "0.01b"
+VERSION = "0.01c"
 
 ### Useful stuff ###
 class logsegv():
@@ -192,7 +192,15 @@ class logsegv():
 		print("Somewhere around:  \t" + self.dump['cfile'])
 
 	def dump_create(self):
-		(status, output) = commands.getstatusoutput("objdump -glCD $(ldd `which %s` | grep %s | cut -d' ' -f 3) > %s" % (self.data['process_name'], self.data['component_name'].split('-')[0], DUMP_FILE))
+		status = None
+		output = None
+
+		if "so" in self.data['component_name'].split('.'):
+			# Shared library
+			(status, output) = commands.getstatusoutput("objdump -glCD $(ldd `which %s` | grep %s | cut -d' ' -f 3) > %s" % (self.data['process_name'], self.data['component_name'].split('-')[0], DUMP_FILE))
+		else:
+			print("Currently only shared library objects are supported.")
+			status = EXIT_FAILURE
 
 		return status
 
