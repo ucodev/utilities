@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.01c
+#  Version:	0.02
 #  Portability: GNU/Linux, Python >= 2.6, Python < 3.x
 #  Description: Analyzes a syslog segfault entry and tries to dump some human readable data
 #               regarding the cause of the crash.
@@ -48,7 +48,7 @@
 # Usage example:
 #
 #    $ ./logsegv.py "Feb 28 19:46:12 localhost kernel: [196586.543197] test[3663]: segfault at 7fde9762e9d0 ip 00007fde9e24a70d sp 00007fde9d639eb0 error 4 in libpthread-2.19.so[7fde9e23d000+19000]"
-#    Logsegv v0.01c
+#    Logsegv v0.02
 #    Copyright (c) 2015  Pedro A. Hortas (pah@ucodev.org)
 #    Licensed under the BSD 3-Clause license
 #    http://www.ucodev.org
@@ -88,10 +88,13 @@ import commands
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 DUMP_FILE = "/tmp/.dump.dat"
-VERSION = "0.01c"
+VERSION = "0.02"
 
 ### Useful stuff ###
 class logsegv():
+	def is_shared(self):
+		return "so" in self.data['component_name'].split('.')
+
 	def error_to_string(self, error):
 		error_str = ""
 
@@ -137,6 +140,10 @@ class logsegv():
 		self.data['component_name'] = pat.group(9)
 		self.data['component_base'] = int(pat.group(10), 16)
 		self.data['component_size'] = int(pat.group(11), 16)
+		self.data['addr_opcode'] = self.data['reg_eip']
+
+		if self.is_shared():
+			self.data['addr_opcode'] -= self.data['component_base']
 
 	def preliminary_data_print(self):
 		print("Ocurred on:        \t" + self.data['date'])
@@ -150,7 +157,7 @@ class logsegv():
 		print("Component Name:    \t" + self.data['component_name'])
 		print("Region Base:       \t" + hex(self.data['component_base']))
 		print("Region Size:       \t" + hex(self.data['component_size']))
-		print("Opcode Address:    \t" + hex(self.data['reg_eip'] - self.data['component_base']))
+		print("Opcode Address:    \t" + hex(self.data['addr_opcode']))
 
 	def addr_dump_fetch(self, addr):
 		cur_func = None
@@ -183,6 +190,9 @@ class logsegv():
 			self.dump = None
 			return
 
+		if not cur_file:
+			cur_file = "<unknown>"
+
 		self.dump = { 'opcode': opcode, 'instruction': instruction, 'cfile': cur_file, 'cfunc': cur_func }
 
 	def addr_dump_print(self):
@@ -195,12 +205,10 @@ class logsegv():
 		status = None
 		output = None
 
-		if "so" in self.data['component_name'].split('.'):
-			# Shared library
+		if self.is_shared():
 			(status, output) = commands.getstatusoutput("objdump -glCD $(ldd `which %s` | grep %s | cut -d' ' -f 3) > %s" % (self.data['process_name'], self.data['component_name'].split('-')[0], DUMP_FILE))
 		else:
-			print("Currently only shared library objects are supported.")
-			status = EXIT_FAILURE
+			(status, output) = commands.getstatusoutput("objdump -glCD `which %s` > %s" % (self.data['process_name'], DUMP_FILE))
 
 		return status
 
@@ -255,7 +263,7 @@ class logsegv():
 			return EXIT_FAILURE
 
 		# Fech data from dump
-		self.addr_dump_fetch(self.data['reg_eip'] - self.data['component_base'])
+		self.addr_dump_fetch(self.data['addr_opcode'])
 
 		if not self.dump:
 			print("Nothing found :(")
@@ -270,6 +278,7 @@ class logsegv():
 		# Unlink temporary files
 		self.dump_unlink()
 
+		# All good
 		return EXIT_SUCCESS
 
 
