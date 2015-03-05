@@ -39,16 +39,19 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.02
+#  Version:	0.02a
 #  Portability: GNU/Linux, Python >= 2.6, Python < 3.x
 #  Description: Analyzes a syslog segfault entry and tries to dump some human readable data
 #               regarding the cause of the crash.
+#  Deps:	'ldd', 'which', 'objdump', 'grep' and 'cut' paths in $PATH.
+#		Also grant that when dealing with non shared object components, the binary path must
+#		be set in $PATH before executing logsegv.
 #
 #
 # Usage example:
 #
 #    $ ./logsegv.py "Feb 28 19:46:12 localhost kernel: [196586.543197] test[3663]: segfault at 7fde9762e9d0 ip 00007fde9e24a70d sp 00007fde9d639eb0 error 4 in libpthread-2.19.so[7fde9e23d000+19000]"
-#    Logsegv v0.02
+#    Logsegv v0.02a
 #    Copyright (c) 2015  Pedro A. Hortas (pah@ucodev.org)
 #    Licensed under the BSD 3-Clause license
 #    http://www.ucodev.org
@@ -88,7 +91,7 @@ import commands
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 DUMP_FILE = "/tmp/.dump.dat"
-VERSION = "0.02"
+VERSION = "0.02a"
 
 ### Useful stuff ###
 class logsegv():
