@@ -3,7 +3,7 @@
 # @file logsegv.py
 # @brief Convert a syslog segfault entry into human readable data
 #
-# Date: 05-03-2015
+# Date: 06-03-2015
 # License: BSD 3-Clause
 # 
 # Copyright (c) 2015, Pedro A. Hortas (pah@ucodev.org)
@@ -39,19 +39,19 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.02a
+#  Version:	0.02b
 #  Portability: GNU/Linux, Python >= 2.6, Python < 3.x
 #  Description: Analyzes a syslog segfault entry and tries to dump some human readable data
 #               regarding the cause of the crash.
 #  Deps:	'ldd', 'which', 'objdump', 'grep' and 'cut' paths in $PATH.
-#		Also grant that when dealing with non shared object components, the binary path must
-#		be set in $PATH before executing logsegv.
+#		Also grant that when dealing with non shared object components, the affected binary
+#		path must be set in $PATH before executing logsegv.
 #
 #
 # Usage example:
 #
 #    $ ./logsegv.py "Feb 28 19:46:12 localhost kernel: [196586.543197] test[3663]: segfault at 7fde9762e9d0 ip 00007fde9e24a70d sp 00007fde9d639eb0 error 4 in libpthread-2.19.so[7fde9e23d000+19000]"
-#    Logsegv v0.02a
+#    Logsegv v0.02b
 #    Copyright (c) 2015  Pedro A. Hortas (pah@ucodev.org)
 #    Licensed under the BSD 3-Clause license
 #    http://www.ucodev.org
@@ -91,7 +91,7 @@ import commands
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 DUMP_FILE = "/tmp/.dump.dat"
-VERSION = "0.02a"
+VERSION = "0.02b"
 
 ### Useful stuff ###
 class logsegv():
@@ -128,7 +128,7 @@ class logsegv():
 		# Check if input is valid
 		if not pat:
 			self.data = None
-			return
+			return self.data
 
 		# Assign and process values
 		self.data = {}
@@ -148,7 +148,10 @@ class logsegv():
 		if self.is_shared():
 			self.data['addr_opcode'] -= self.data['component_base']
 
+		return self.data
+
 	def preliminary_data_print(self):
+		print("Preliminary findings:\n")
 		print("Ocurred on:        \t" + self.data['date'])
 		print("Hostname:          \t" + self.data['hostname'])
 		print("Process Name:      \t" + self.data['process_name'])
@@ -191,12 +194,14 @@ class logsegv():
 
 		if not opcode:
 			self.dump = None
-			return
+			return self.dump
 
 		if not cur_file:
 			cur_file = "<unknown>"
 
 		self.dump = { 'opcode': opcode, 'instruction': instruction, 'cfile': cur_file, 'cfunc': cur_func }
+
+		return self.dump
 
 	def addr_dump_print(self):
 		print("Offending opcode:  \t" + self.dump['opcode'])
@@ -239,36 +244,31 @@ class logsegv():
 		self.product_version()
 
 		# Check usage
-		status = self.usage()
+		if self.usage() >= EXIT_FAILURE:
+			return EXIT_FAILURE 
 
-		if status:
-			return status
+		## STAGE 1 ##
 
 		# Get some preliminary data
-		self.preliminary_data_fetch()
-
-		if not self.data:
+		if not self.preliminary_data_fetch():
 			print("Unable to parse input.")
 			return EXIT_FAILURE
 
 		# Dump some findings
-		print("Preliminary findings:\n")
 		self.preliminary_data_print()
+
+		## STAGE 2 ##
 
 		# Try to get the real deal
 		print("\nGoing deeper...\n")
 
 		# Create dump file
-		status = self.dump_create()
-
-		if status:
+		if self.dump_create() >= EXIT_FAILURE:
 			print("Unable to acquire more data :(")
 			return EXIT_FAILURE
 
 		# Fech data from dump
-		self.addr_dump_fetch(self.data['addr_opcode'])
-
-		if not self.dump:
+		if not self.addr_dump_fetch(self.data['addr_opcode']):
 			print("Nothing found :(")
 			return EXIT_FAILURE
 
