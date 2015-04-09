@@ -1,0 +1,8 @@
+    PKCS#3 DH Parameters: (512 bit)
+        prime:
+            00:fe:9a:a1:50:c7:d9:05:5b:20:f1:aa:86:ac:af:
+            49:4c:09:9f:f7:8d:9f:6e:5f:75:71:27:8d:bf:78:
+            49:35:52:6e:f4:65:32:cd:9e:62:a2:10:23:af:61:
+            90:86:00:14:76:89:22:2c:c6:a2:52:df:e9:b1:eb:
+            16:8b:fb:15:fb
+        generator: 2 (0x2)
