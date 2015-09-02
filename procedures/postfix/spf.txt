@@ -1,0 +1,24 @@
+- Install postfix SPF package
+
+  # apt-get install postfix-policyd-spf-perl
+
+
+- Configure the SPF time limit
+
+  # echo 'policy-spf_time_limit = 3600s' >> /etc/postfix/main.cf
+
+
+- Invoke SPF script
+
+  # echo -e 'policy-spf\tunix\t-\tn\tn\t-\t-\tspawn\tuser=nobody\targv=/usr/sbin/postfix-policyd-spf-perl' >> /etc/postfix/master.cf
+
+
+- Add SPF policy to smtpd recipient restrictions
+
+  # vi /etc/postfix/main.cf
+   > smtpd_recipient_restrictions = ..., check_policy_service unix:private/policy-spf, ...
+
+
+- Reload postfix
+
+  # service postfix reload
