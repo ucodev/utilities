@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.01a
+#  Version:	0.02a
 #  Portability: Python >= 2.6, Python < 3.x
 #  Description: Allow scripts to add, change or remove content from on the specified file.
 #  Deps:	Python modules 'sys', 'os', 'shutil' and 're'
@@ -107,10 +107,10 @@ class Input():
 
 	def validate(self):
 		if len(sys.argv) < 4:
-			print("Usage: %s <file> [add|delete|change] <string|regex> [after|before|with|at] <string|regex|line#n>" % sys.argv[0])
+			print("Usage: %s <file> [add|delete|change|replace] <string|regex> [after|before|with|at] <string|regex|line#n>" % sys.argv[0])
 			sys.exit(EXIT_FAILURE)
 
-		if sys.argv[2] not in ("add", "change", "delete"):
+		if sys.argv[2] not in ("add", "change", "replace", "delete"):
 			Failure("Unrecognized operation: %s" % sys.argv[2])
 
 		if len(sys.argv) != 4 and len(sys.argv) != 6:
@@ -136,7 +136,7 @@ class Process():
 	line_count = 0
 
 	def line(self, line):
-		if runtime["input"].op == "delete":
+		if runtime["input"].op == "delete" or runtime["input"].op == "change":
 			# Check if there's a match on 'what'
 			pat = re.search(runtime["input"].what, line)
 
@@ -187,6 +187,14 @@ class Process():
 			return
 
 		if runtime["input"].op == "change":
+			# The 'change' differs from replace as the 'what' is a regex, not a string
+			if runtime["input"].where == "with":
+				# Replace the contents of 'what' with 'content'
+				runtime["output"].output.append(runtime["input"].content + "\n")
+			else:
+				Failure("Operation 'change' must be used along with 'with'.")
+
+		if runtime["input"].op == "replace":
 			if runtime["input"].where == "with":
 				# Replace the contents of 'what' with 'content'
 				runtime["output"].output.append(line.replace(runtime["input"].what, runtime["input"].content))
