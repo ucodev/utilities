@@ -9,6 +9,7 @@
 		{
 			"description" : "Copy /etc/rc.local to a new test directory",
 			"message"     : "Copying file",
+			"output"      : false,
 			"expect"      : 0,
 			"commands"    : [
 				"mkdir /tmp/test_template",
@@ -18,6 +19,7 @@
 		{
 			"description" : "Add a comment to the end of the copied rc.local file",
 			"message"     : "Mangling file",
+			"output"      : false,
 			"expect"      : 0,
 			"commands"    : [
 				"echo '# EOF' >> /tmp/test_template/rc.local"
@@ -26,6 +28,7 @@
 		{
 			"description" : "Executing the list of commands from file deployable.list",
 			"message"     : "Executing batch",
+			"output"      : false,
 			"expect"      : 0,
 			"commands"    : "./deployable.list"
 		}

@@ -151,8 +151,12 @@ class Process():
 			for command in procedure["commands"]:
 				# Prepend execution data to log file
 				runtime["output"].output.append("echo \"[`date`]: Executing [ %s ]...\" >> %s" % (command, runtime["input"].template_content["context"]["log"]))
-				# Execute command and redirect output to log file
-				runtime["output"].output.append("(%s) &>> %s" % (command, runtime["input"].template_content["context"]["log"]))
+				# Check if output should be shown
+				if procedure["output"]:
+					runtime["output"].output.append("(%s) 2>&1 | tee -a %s; test ${PIPESTATUS[0]} -eq %d" % (command, runtime["input"].template_content["context"]["log"], procedure["expect"]))
+				else:
+					# Execute command and redirect output to log file
+					runtime["output"].output.append("(%s) &>> %s" % (command, runtime["input"].template_content["context"]["log"]))
 				# Check if the return status is the one being expected
 				runtime["output"].output.append("if [ $? -ne %d ]; then echo Failed.; exit 1; fi" % procedure["expect"])
 				# Append execution status to log file
