@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.01a
+#  Version:	0.01b
 #  Portability: Python >= 2.6, Python < 3.x
 #  Description: A simple instrumentation tool based on JSON templates.
 #  Deps:	Python modules 'sys', 'os', 'subprocess' and 'json'
@@ -132,10 +132,11 @@ class Process():
 				# Check if the return status is the one being expected
 				runtime["output"].output.append("if [ $? -ne %d ]; then echo Failed.; exit 1; fi" % procedure["expect"])
 				# Append execution status to log file
-				runtime["output"].output.append("echo \"[`date`]: Successfuly executed[ %s ].\" >> %s" % (command, runtime["input"].template_content["context"]["log"]))
+				runtime["output"].output.append("echo \"[`date`]: Successfully executed [ %s ].\" >> %s" % (command, runtime["input"].template_content["context"]["log"]))
 			# If we've reached this point, everything is good.
 			runtime["output"].output.append("echo OK.")
 
+		# Inform that everything went fine.
 		runtime["output"].output.append("echo -e \"\\nFinished processing '%s'.\"" % runtime["input"].template_content["context"]["name"])
 
 	def do(self):
