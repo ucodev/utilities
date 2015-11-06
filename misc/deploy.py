@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.02a
+#  Version:	0.02b
 #  Portability: Python >= 2.6, Python < 3.x
 #  Description: A simple instrumentation tool based on JSON templates.
 #  Deps:	Python modules 'sys', 'os', 'subprocess' and 'json'
@@ -133,6 +133,9 @@ class Process():
 	def deploy(self):
 		# Shebang Line
 		runtime["output"].output.append("#!%s" % runtime["input"].template_content["context"]["shell"])
+		# Set base directory to environment
+		runtime["output"].output.append("DEPLOY_PWD=${PWD}")
+
 		# Header to stdout
 		runtime["output"].output.append("echo -e \"Deploying '%s' version %s.\\n\"" % (runtime["input"].template_content["context"]["name"], runtime["input"].template_content["context"]["version"]))
 		# Header to logfile
@@ -153,10 +156,10 @@ class Process():
 				runtime["output"].output.append("echo \"[`date`]: Executing [ %s ]...\" >> %s" % (command, runtime["input"].template_content["context"]["log"]))
 				# Check if output should be shown
 				if procedure["output"]:
-					runtime["output"].output.append("(%s) 2>&1 | tee -a %s; test ${PIPESTATUS[0]} -eq %d" % (command, runtime["input"].template_content["context"]["log"], procedure["expect"]))
+					runtime["output"].output.append("%s 2>&1 | tee -a %s; test ${PIPESTATUS[0]} -eq %d" % (command if command.split(' ')[0] == "cd" else "(" + command + ")", runtime["input"].template_content["context"]["log"], procedure["expect"]))
 				else:
 					# Execute command and redirect output to log file
-					runtime["output"].output.append("(%s) &>> %s" % (command, runtime["input"].template_content["context"]["log"]))
+					runtime["output"].output.append("%s &>> %s" % (command if command.split(' ')[0] == "cd" else "(" + command + ")", runtime["input"].template_content["context"]["log"]))
 				# Check if the return status is the one being expected
 				runtime["output"].output.append("if [ $? -ne %d ]; then echo Failed.; exit 1; fi" % procedure["expect"])
 				# Append execution status to log file
