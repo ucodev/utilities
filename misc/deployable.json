@@ -22,6 +22,12 @@
 			"commands"    : [
 				"echo '# EOF' >> /tmp/test_template/rc.local"
 			]
+		},
+		{
+			"description" : "Executing the list of commands from file deployable.list",
+			"message"     : "Executing batch",
+			"expect"      : 0,
+			"commands"    : "./deployable.list"
 		}
 	]
 }

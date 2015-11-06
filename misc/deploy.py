@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.01b
+#  Version:	0.02a
 #  Portability: Python >= 2.6, Python < 3.x
 #  Description: A simple instrumentation tool based on JSON templates.
 #  Deps:	Python modules 'sys', 'os', 'subprocess' and 'json'
@@ -49,6 +49,7 @@
 #  # ./deploy.py deployable.json
 #
 #  - Check file deployable.json for a template example
+#  - Check file deployable.list for a batch example
 #
 
 import sys
@@ -109,6 +110,26 @@ class Input():
 		self.decode()
 
 class Process():
+	def import_commands(self, procedure):
+		if type(procedure["commands"]) == list:
+			return procedure["commands"]
+		elif type(procedure["commands"]) in (str, unicode):
+			with open(procedure["commands"]) as f:
+				procedure["commands"] = list()
+
+				for line in f.readlines():
+					if not line:
+						break
+
+					if line[0] == "\n":
+						continue
+
+					procedure["commands"].append(line)
+
+			return procedure["commands"]
+		else:
+			Failure("Invalid type for procedure commands detected: %s" % str(type(procedure["commands"])))
+
 	def deploy(self):
 		# Shebang Line
 		runtime["output"].output.append("#!%s" % runtime["input"].template_content["context"]["shell"])
@@ -123,6 +144,9 @@ class Process():
 			runtime["output"].output.append("# %s" % procedure["description"])
 			# Show the progress message
 			runtime["output"].output.append("echo -n \"%s... \"" % procedure["message"])
+			# Import procedure commands if required
+			procedure["commands"] = self.import_commands(procedure)
+
 			# Process procedure commands
 			for command in procedure["commands"]:
 				# Prepend execution data to log file
