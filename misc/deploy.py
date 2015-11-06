@@ -39,7 +39,7 @@
 # Project details:
 #
 #  Home Page:	http://www.ucodev.org
-#  Version:	0.02b
+#  Version:	0.02c
 #  Portability: Python >= 2.6, Python < 3.x
 #  Description: A simple instrumentation tool based on JSON templates.
 #  Deps:	Python modules 'sys', 'os', 'subprocess' and 'json'
@@ -134,7 +134,7 @@ class Process():
 		# Shebang Line
 		runtime["output"].output.append("#!%s" % runtime["input"].template_content["context"]["shell"])
 		# Set base directory to environment
-		runtime["output"].output.append("DEPLOY_PWD=${PWD}")
+		runtime["output"].output.append("export DEPLOY_PWD=${PWD}")
 
 		# Header to stdout
 		runtime["output"].output.append("echo -e \"Deploying '%s' version %s.\\n\"" % (runtime["input"].template_content["context"]["name"], runtime["input"].template_content["context"]["version"]))
