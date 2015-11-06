@@ -1,0 +1,28 @@
+{
+	"context" : {
+		"name"    : "Test Template",
+		"version" : "1.0",
+		"shell"   : "/bin/bash",
+		"log"     : "/tmp/test_template.log"
+	},
+	"procedures" : [
+		{
+			"description" : "Copy /etc/rc.local to a new test directory",
+			"message"     : "Copying file",
+			"expect"      : 0,
+			"commands"    : [
+				"mkdir /tmp/test_template",
+				"cp /etc/rc.local /tmp/test_template/"
+			]
+		},
+		{
+			"description" : "Add a comment to the end of the copied rc.local file",
+			"message"     : "Mangling file",
+			"expect"      : 0,
+			"commands"    : [
+				"echo '# EOF' >> /tmp/test_template/rc.local"
+			]
+		}
+	]
+}
+
