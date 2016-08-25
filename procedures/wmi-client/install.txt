@@ -1,0 +1,26 @@
+1. Regular installation:
+
+ # wget http://www.openvas.org/download/wmi/wmi-1.3.14.tar.bz2
+ # tar xvf wmi-*.tar.bz2
+ # cd wmi-1.3.14
+ # make
+
+
+2. If using gcc >= 4.8:
+
+ # make "gcc -E -ffreestanding"
+ (See: http://gcc.gnu.org/gcc-4.8/porting_to.html)
+
+
+3. If it fails to link libgnutls regarding undefined references to gnutls_transport_set_lowat:
+
+ # vi Samba/source/lib/tls/tls.c
+
+ Replace ocurrences of:
+
+  gnutls_transport_set_lowat(tls->session, 0);
+
+ with:
+
+  gnutls_record_check_pending(tls->session);
+
