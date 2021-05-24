@@ -82,7 +82,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Execution
-tar zcf - ${DIR_ORIGIN} 2> /dev/null | openssl enc -e -aes256 -pbkdf2 -pass file:${FIL_PLNKEY} -out ${FIL_DESTIN} >& /dev/null
+tar zcf - ${DIR_ORIGIN} 2> /dev/null | openssl enc -e -aes-256-cbc -salt -md sha512 -pbkdf2 -iter 100000 -pass file:${FIL_PLNKEY} -out ${FIL_DESTIN} >& /dev/null
 
 # Reporting
 if [ $? -ne 0 ]; then
